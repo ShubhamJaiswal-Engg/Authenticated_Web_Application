@@ -14,6 +14,7 @@ const Header = () => {
       hover:bg-gray-100 transition-all'>Get Started</button>
     </div>
   )
+  
 }
 
 export default Header
