@@ -12,6 +12,7 @@ export const EMAIL_VERIFY_TEMPLATE = `<!DOCTYPE html>
     />
   </head>
   <body
+  
     style="
       margin: 0;
       font-family: 'Poppins', sans-serif;
