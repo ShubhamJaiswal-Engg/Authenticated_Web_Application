@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodemailer.js";
 import userModel from "../models/userModel.js";
+import { EMAIL_VERIFY_TEMPLATE,PASSWORD_RESET_TEMPLATE,REGISTER_EMAIL } from "../config/emailTemplates.js";
 
 export const register = async (req,res)=>{
     const {email, name, password} = req.body;
@@ -30,7 +31,11 @@ export const register = async (req,res)=>{
             from : process.env.SENDER_EMAIL,
             to: email,
             subject: "Welcome to Shubham Websites",
-            text: `Welcome to Shubham Auth website. Your accoumt is created with emailo id: ${email}`
+            html:REGISTER_EMAIL.replace('{email}', email).replace('{name}', user.name).replace('{Date}',new Date().toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'}))
+            // text: `Welcome to Shubham Auth website. Your account is created with email id: ${email}`
         }
         await transporter.sendMail(mailOptions);
         return res.json({success:true, message:"User successfully registered"});
@@ -99,7 +104,10 @@ export const sendVerifyOtp = async(req, res)=>{
         from : process.env.SENDER_EMAIL,
         to: user.email,
         subject: "Account Verification Otp",
-        text: `Your otp is ${otp}. Verify your account using this Otp.`
+        html: EMAIL_VERIFY_TEMPLATE.replace('{OTP}', otp).replace('{Date}',new Date().toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'})).replace('{name}',user.name)
     }
     await transporter.sendMail(mailOption);
 
@@ -169,7 +177,12 @@ export const sendResetOtp = async (req, res) =>{
         from : process.env.SENDER_EMAIL,
         to: user.email,
         subject: "Password Reset Otp",
-        text: `Your otp for reseting your password is ${otp}. Use this OTP to proceed with resetting your password.`
+        html: PASSWORD_RESET_TEMPLATE.replace('{OTP}', otp).replace('{Date}',new Date().toLocaleDateString('en-GB', {
+                     day: '2-digit',
+                     month: 'short',
+                     year: 'numeric'
+                    })).replace('{name}',user.name)
+        // text: `Your otp for reseting your password is ${otp}. Use this OTP to proceed with resetting your password.`
     }
     await transporter.sendMail(mailOption);
 
